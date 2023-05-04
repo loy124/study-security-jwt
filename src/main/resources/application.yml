@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: local
+  datasource:
+#    url: jdbc:h2:tcp://localhost/~/querydsl
+    url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+        #jpql 조회
+        use_sql_comments: true
+
+logging.level:
+  org.hibernate.SQL: debug
+#  org.hibernate.type: trace
