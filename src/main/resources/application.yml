@@ -1,4 +1,8 @@
 spring:
+  devtools:
+    restart:
+      enabled: true
+
   profiles:
     active: local
   datasource:
