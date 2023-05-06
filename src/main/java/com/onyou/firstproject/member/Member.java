@@ -1,16 +1,19 @@
 package com.onyou.firstproject.member;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.onyou.firstproject.board.Board;
+import com.onyou.firstproject.common.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Member {
-    @Id @GeneratedValue
+@ToString(exclude = {"boards"})
+public class Member extends BaseEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
     private Long id;
 
@@ -19,6 +22,20 @@ public class Member {
     private String email;
     private String password;
     private String username;
+
+
+    @OneToMany(mappedBy = "member")
+    private List<Board> boards = new ArrayList<>();
+
+
+    @Builder
+    public Member(Long id, String email, String password, String username) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+    }
+
 
 
 }

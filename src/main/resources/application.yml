@@ -7,7 +7,7 @@ spring:
     active: local
   datasource:
 #    url: jdbc:h2:tcp://localhost/~/querydsl
-    url: jdbc:mysql://localhost:3306/security?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/study-security-jwt?serverTimezone=Asia/Seoul
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
