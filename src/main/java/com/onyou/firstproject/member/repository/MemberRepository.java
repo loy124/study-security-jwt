@@ -1,6 +1,7 @@
-package com.onyou.firstproject.member;
+package com.onyou.firstproject.member.repository;
 
 
+import com.onyou.firstproject.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,5 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     //Email로 찾기
 
     Member findByEmail(@Param("email") String email);
+
+    List<Member> findListByEmail(@Param("email") String email);
 
 }

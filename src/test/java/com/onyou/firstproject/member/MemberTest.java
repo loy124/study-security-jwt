@@ -1,7 +1,6 @@
 package com.onyou.firstproject.member;
 
-import com.onyou.firstproject.board.Board;
-import org.assertj.core.api.Assertions;
+import com.onyou.firstproject.member.entity.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

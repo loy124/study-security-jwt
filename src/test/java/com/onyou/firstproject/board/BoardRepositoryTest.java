@@ -1,7 +1,6 @@
 package com.onyou.firstproject.board;
 
-import com.onyou.firstproject.member.Member;
-import org.assertj.core.api.Assertions;
+import com.onyou.firstproject.member.entity.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +13,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -71,7 +69,12 @@ class BoardRepositoryTest {
         assertThat(board1.getContent().equals(board.getContent()));
         assertThat(member1.getEmail().equals(member.getEmail()));
 
-
     }
 
+
 }
+
+
+
+
+

@@ -1,17 +1,17 @@
-package com.onyou.firstproject.member;
+package com.onyou.firstproject.member.entity;
 
 import com.onyou.firstproject.board.Board;
 import com.onyou.firstproject.common.BaseEntity;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(exclude = {"boards"})
+@ToString(exclude = {"boards", "roles"})
 public class Member extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
@@ -24,18 +24,37 @@ public class Member extends BaseEntity {
     private String username;
 
 
+/*
+* One to many
+* */
+
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "member")
+    private List<MemberRole> memberRoles = new ArrayList<>();
+
+
+
     @Builder
-    public Member(Long id, String email, String password, String username) {
-        this.id = id;
+    public Member(String email, String password, String username) {
         this.email = email;
         this.password = password;
         this.username = username;
+
     }
 
+
+
+
+
+
+
+
+    public void encodePassword(BCryptPasswordEncoder bCryptPasswordEncoder){
+        this.password = bCryptPasswordEncoder.encode(password);
+    }
 
 
 }

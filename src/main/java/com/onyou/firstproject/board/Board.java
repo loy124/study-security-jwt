@@ -1,7 +1,7 @@
 package com.onyou.firstproject.board;
 
 import com.onyou.firstproject.common.BaseEntity;
-import com.onyou.firstproject.member.Member;
+import com.onyou.firstproject.member.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;
