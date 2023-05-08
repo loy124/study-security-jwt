@@ -1,6 +1,8 @@
 package com.onyou.firstproject.config.auth;
 
 import com.onyou.firstproject.member.entity.Member;
+import com.onyou.firstproject.member.entity.MemberRole;
+import com.onyou.firstproject.member.entity.RoleName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails {
@@ -18,6 +21,12 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
+
+        List<MemberRole> memberRoles = member.getMemberRoles();
+        for (MemberRole memberRole : memberRoles) {
+            RoleName roleName = memberRole.getRole().getRoleName();
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+        }
 
 //        authorities.add(new SimpleGrantedAuthority("ROLE_" + member.getRole().toString()));
 
