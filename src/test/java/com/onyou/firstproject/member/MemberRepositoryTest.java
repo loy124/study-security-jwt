@@ -1,16 +1,23 @@
 package com.onyou.firstproject.member;
 
 import com.onyou.firstproject.member.entity.Member;
+import com.onyou.firstproject.member.entity.MemberRole;
+import com.onyou.firstproject.member.entity.Role;
+import com.onyou.firstproject.member.entity.RoleName;
 import com.onyou.firstproject.member.repository.MemberRepository;
+import com.onyou.firstproject.member.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.config.annotation.web.configurers.UrlAuthorizationConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,6 +32,9 @@ class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -67,10 +77,71 @@ class MemberRepositoryTest {
 
     }
 
+    /**
+     * 여기서 회원가입
+     * 유저 주입
+     * 검증
+     */
+
     @Test
-    public void 회원_수정(){
+    public void 회원가입(){
+
+        //given
+        Role role = new Role(RoleName.USER);
+        Role role2 = new Role(RoleName.MANAGER);
+
+        em.persist(role);
+        em.persist(role2);
+
+        //여기서 이제 member에 role을 추가해주는 로직이 필요하다.
+        MemberRole memberRole = MemberRole.builder()
+                .member(member)
+                .role(role)
+                .build();
+
+
+
+        MemberRole memberRole2 = MemberRole.builder()
+                .member(member)
+                .role(role2)
+                .build();
+
+        em.persist(memberRole);
+        em.persist(memberRole2);
+
+        member.getMemberRoles().add(memberRole);
+        member.getMemberRoles().add(memberRole2);
+        //when
+
+        em.flush();
+        em.clear();
+
+//        Member findMember = memberRepository.findByEmail("onyou.lee@mincoding.co.kr");
+        Member findMember = memberRepository.findJoinByEmail("onyou.lee@mincoding.co.kr");
+
+        //then
+
+        assertThat(findMember.getUsername().equals(member.getUsername()));
+        assertThat(findMember.getEmail().equals(member.getEmail()));
+
+
+        List<MemberRole> memberRoles = findMember.getMemberRoles();
+
+        for (MemberRole memberRole1 : memberRoles) {
+            System.out.println("memberRole1 = " + memberRole1);
+            System.out.println("memberRole1 = " + memberRole1.getMember());
+            System.out.println("memberRole1 = " + memberRole1.getRole());
+        }
+
+
 
 
     }
 
+
 }
+
+
+
+
+

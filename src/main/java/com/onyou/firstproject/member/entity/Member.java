@@ -11,7 +11,7 @@ import java.util.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(exclude = {"boards", "roles"})
+@ToString(exclude = {"boards", "memberRoles"})
 public class Member extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
@@ -23,16 +23,15 @@ public class Member extends BaseEntity {
     private String password;
     private String username;
 
-
 /*
 * One to many
 * */
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Board> boards = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<MemberRole> memberRoles = new ArrayList<>();
 
 
@@ -46,15 +45,21 @@ public class Member extends BaseEntity {
     }
 
 
-
-
-
-
-
+    //편의 메서드
 
     public void encodePassword(BCryptPasswordEncoder bCryptPasswordEncoder){
         this.password = bCryptPasswordEncoder.encode(password);
     }
+
+    //==연관관계 메서드==//
+    //관리자의 입장에서 memberId를 받고, Role의 id를 받아서 이를 기반으로 memberRole을 생성해야한다.
+    // 먼저 memberRole을 생성하고 이걸 Member에서 등록해줘야한다.
+
+    //유저가 멤버를 만드는데 MemberRole을 만들어서 같이 보내준다.
+
+
+
+
 
 
 }

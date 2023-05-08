@@ -2,7 +2,9 @@ package com.onyou.firstproject.member.dto;
 
 
 import com.onyou.firstproject.member.entity.Member;
+import com.onyou.firstproject.member.entity.MemberRole;
 import com.onyou.firstproject.member.entity.Role;
+import com.onyou.firstproject.member.entity.RoleName;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -38,9 +40,6 @@ public class MemberSignUpRequestDto {
                 .username(username)
                 .password(password)
                 .build();
-
-//        member.addRoles(Role.USER);
-
         return member;
     }
 
