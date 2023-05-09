@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
+
 public class PrincipalDetails implements UserDetails {
 
     private final Member member;

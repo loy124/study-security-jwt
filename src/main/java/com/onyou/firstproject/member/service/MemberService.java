@@ -6,4 +6,6 @@ public interface MemberService {
 
     //회원가입
     public Long signUp(MemberSignUpRequestDto memberSignUpRequestDto) throws Exception;
+
+
 }

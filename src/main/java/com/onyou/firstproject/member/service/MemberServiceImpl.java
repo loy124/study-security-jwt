@@ -1,5 +1,6 @@
 package com.onyou.firstproject.member.service;
 
+import com.onyou.firstproject.config.jwt.JwtTokenUtil;
 import com.onyou.firstproject.member.dto.MemberSignUpRequestDto;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.entity.MemberRole;
@@ -10,6 +11,7 @@ import com.onyou.firstproject.member.repository.RoleRepository;
 import com.onyou.firstproject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,11 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Value("${jwt.token.secret}")
+    private String key;
+
+    private Long expireTimeMs = 1000 * 60 * 60l;
 
     @Autowired
     private  EntityManager em;
@@ -63,9 +70,25 @@ public class MemberServiceImpl implements MemberService {
         em.persist(memberRole);
 
         member.getMemberRoles().add(memberRole);
-
+kkk
 
         return member.getId();
+    }
+
+    public String login(String email, String password){
+        Member selectedMember = memberRepository.findByEmail(email);
+
+        if(!bCryptPasswordEncoder.matches(selectedMember.getPassword(), password)){
+            System.out.println("비밀번호가 일치하지 않습니다");
+        }
+
+
+        String token = JwtTokenUtil.createToken(selectedMember.getEmail(), key, expireTimeMs);
+
+        return token;
+
+
+
     }
 
 

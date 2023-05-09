@@ -18,7 +18,7 @@ public class SecurityConfig {
     private CorsFilter corsFilter;
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf().disable()
                 .formLogin().disable()

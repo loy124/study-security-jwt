@@ -1,6 +1,7 @@
 package com.onyou.firstproject.member.controller;
 
 
+import com.onyou.firstproject.member.dto.LoginRequestDto;
 import com.onyou.firstproject.member.dto.MemberSignUpRequestDto;
 import com.onyou.firstproject.member.service.MemberServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,14 @@ public class MemberController {
     @PostMapping
     public Long signUp(@RequestBody @Valid MemberSignUpRequestDto memberSignUpRequestDto) throws Exception{
         Long signUp = memberService.signUp(memberSignUpRequestDto);
+
+        return signUp;
+
+    }
+
+    @PostMapping("login")
+    public String login(@RequestBody @Valid LoginRequestDto loginRequestDto) throws Exception{
+        String signUp = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
         return signUp;
 
