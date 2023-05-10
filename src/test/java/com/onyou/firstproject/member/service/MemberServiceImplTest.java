@@ -1,9 +1,8 @@
 package com.onyou.firstproject.member.service;
 
-import com.onyou.firstproject.member.dto.MemberSignUpRequestDto;
+import com.onyou.firstproject.member.dto.MemberDto;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
+import static com.onyou.firstproject.member.dto.MemberDto.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 

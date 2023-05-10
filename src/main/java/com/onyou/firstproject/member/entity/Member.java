@@ -1,6 +1,6 @@
 package com.onyou.firstproject.member.entity;
 
-import com.onyou.firstproject.board.Board;
+import com.onyou.firstproject.board.entity.Board;
 import com.onyou.firstproject.common.BaseEntity;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

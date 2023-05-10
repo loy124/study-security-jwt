@@ -1,11 +1,11 @@
 package com.onyou.firstproject.member.service;
 
-import com.onyou.firstproject.member.dto.MemberSignUpRequestDto;
+import com.onyou.firstproject.member.dto.MemberDto;
 
 public interface MemberService {
 
     //회원가입
-    public Long signUp(MemberSignUpRequestDto memberSignUpRequestDto) throws Exception;
+    public Long signUp(MemberDto.MemberSignUpRequestDto memberSignUpRequestDto) throws Exception;
 
 
 }

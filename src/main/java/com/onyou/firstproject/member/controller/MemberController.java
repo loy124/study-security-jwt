@@ -1,8 +1,7 @@
 package com.onyou.firstproject.member.controller;
 
 
-import com.onyou.firstproject.member.dto.LoginRequestDto;
-import com.onyou.firstproject.member.dto.MemberSignUpRequestDto;
+import com.onyou.firstproject.member.dto.MemberDto;
 import com.onyou.firstproject.member.service.MemberServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +22,7 @@ public class MemberController {
     // @NotNull 같은 옵션을 Entity에 직접주게되면 이를 수정할 경우 API 스펙들이 변하게된다
     // 따라서 API 요청 스펙에 맞춰서 각자 DTO를 파라미터로 받고 내보내준다.
     @PostMapping
-    public Long signUp(@RequestBody @Valid MemberSignUpRequestDto memberSignUpRequestDto) throws Exception{
+    public Long signUp(@RequestBody @Valid MemberDto.MemberSignUpRequestDto memberSignUpRequestDto) throws Exception{
         Long signUp = memberService.signUp(memberSignUpRequestDto);
 
         return signUp;
@@ -31,7 +30,7 @@ public class MemberController {
     }
 
     @PostMapping("login")
-    public String login(@RequestBody @Valid LoginRequestDto loginRequestDto) throws Exception{
+    public String login(@RequestBody @Valid MemberDto.LoginRequestDto loginRequestDto) throws Exception{
         String signUp = memberService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
         return signUp;

@@ -1,5 +1,7 @@
 package com.onyou.firstproject.board;
 
+import com.onyou.firstproject.board.entity.Board;
+import com.onyou.firstproject.board.repository.BoardRepository;
 import com.onyou.firstproject.member.entity.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

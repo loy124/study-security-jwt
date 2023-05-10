@@ -1,14 +1,13 @@
 package com.onyou.firstproject.member.service;
 
-import com.onyou.firstproject.config.jwt.JwtTokenUtil;
-import com.onyou.firstproject.member.dto.MemberSignUpRequestDto;
+import com.onyou.firstproject.utils.JwtTokenUtil;
+import com.onyou.firstproject.member.dto.MemberDto;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.entity.MemberRole;
 import com.onyou.firstproject.member.entity.Role;
 import com.onyou.firstproject.member.entity.RoleName;
 import com.onyou.firstproject.member.repository.MemberRepository;
 import com.onyou.firstproject.member.repository.RoleRepository;
-import com.onyou.firstproject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Transactional
     @Override
-    public Long signUp(MemberSignUpRequestDto memberSignUpRequestDto) throws Exception {
+    public Long signUp(MemberDto.MemberSignUpRequestDto memberSignUpRequestDto) throws Exception {
 
         //이메일 검증 하기
         validateDuplicateMember(memberSignUpRequestDto.toEntity());
@@ -70,7 +68,7 @@ public class MemberServiceImpl implements MemberService {
         em.persist(memberRole);
 
         member.getMemberRoles().add(memberRole);
-kkk
+
 
         return member.getId();
     }
