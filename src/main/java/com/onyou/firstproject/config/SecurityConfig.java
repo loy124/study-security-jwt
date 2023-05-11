@@ -2,8 +2,6 @@ package com.onyou.firstproject.config;
 
 
 import com.onyou.firstproject.member.repository.MemberRepository;
-import com.onyou.firstproject.member.service.MemberService;
-import com.onyou.firstproject.member.service.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,9 +38,12 @@ public class SecurityConfig {
                 .and()
                 .addFilter(corsFilter)
                 .addFilterBefore(new JwtFilter(memberRepository, secretKey), UsernamePasswordAuthenticationFilter.class)
+
                 .authorizeRequests()
+
                 .antMatchers("/api/member/login").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/member").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/member/silent-refresh").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").authenticated()
                 .and()
                 .build();

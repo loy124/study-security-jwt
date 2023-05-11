@@ -51,4 +51,17 @@ public class MemberDto {
 
     }
 
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class MemberLoginResponseDto {
+        private String token;
+
+        public MemberLoginResponseDto(String token) {
+            this.token = token;
+        }
+    }
+
+
+
 }

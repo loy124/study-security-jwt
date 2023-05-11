@@ -1,6 +1,5 @@
 package com.onyou.firstproject.member.service;
 
-import com.onyou.firstproject.member.dto.MemberDto;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MemberServiceImplTest {
 
     @Autowired
-    private MemberServiceImpl memberService;
+    private MemberService memberService;
 
     @Autowired
     private MemberRepository memberRepository;
