@@ -39,35 +39,27 @@ public class JwtFilter extends OncePerRequestFilter {
 
         final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         log.info("authorization", authorization );
-        if(authorization == null || !authorization.startsWith("Bearer ")){
-            log.error("authentication에 이슈가 있습니다");
-            filterChain.doFilter(request, response);
-            return;
-        }
-
 
         //Token 꺼내기
-        String token = authorization.split(" ")[1];
-        boolean expired = false;
+        String accessToken = getAccessToken(authorization);
 
-        expired = JwtTokenUtil.isExpired(token, secretKey);
+        boolean isExpiredOrIssue = JwtTokenUtil.isExpired(accessToken, secretKey);
 
         String refreshToken = getRefreshTokenFromCookie(request);
 
         // 1. 액세스 토큰 검증
         // 2. 액세스토큰 만료시 refresh token 검증
-        // TODO 3. refresh 만료가 가까워질때 refresh token 재발급
+        // 3. refresh 만료가 가까워질때 refresh token 재발급
         //TODO 4. Oauth 진행하기
-        if(expired) {
+        if(isExpiredOrIssue) {
             log.error("access 토큰이 만료되었습니다.");
 
             // 액세스가 만료되면서 refresh도 만료되었기 때문에
             if(refreshToken == null || JwtTokenUtil.isExpired(refreshToken, secretKey)){
-                log.error("refresh 토큰이 만료되었습니다.");
+                log.error("refresh 토큰이 없거나 만료되었습니다.");
                 filterChain.doFilter(request, response);
                 return;
             }
-
 
 
             String parsingEmailFromRefreshToken = getEmail(refreshToken);
@@ -75,28 +67,25 @@ public class JwtFilter extends OncePerRequestFilter {
             if(parsingEmailFromRefreshToken != null){
 
                 //refresh 토큰이 유효한 상태기때문에 accessToken을 재발급한다.
-                token = JwtTokenUtil.createToken(parsingEmailFromRefreshToken, secretKey, accessExpireTimeMs);
+                accessToken = JwtTokenUtil.createToken(parsingEmailFromRefreshToken, secretKey, accessExpireTimeMs);
 
             }
 
         }
 
 
-
         //만료 안된 accessToken이 발급되는 상태
 
-        String email = getEmail(token);
+        String email = getEmail(accessToken);
         log.info("email", email);
 
-        boolean oneWeeksLeft = JwtTokenUtil.isWithinOneWeek(refreshToken, secretKey);
-        //만료가 되지 않는상태에서 refresh 검증후 재발급하는 로직
-        if(oneWeeksLeft){
+        boolean isOneWeeksLeft = JwtTokenUtil.isWithinOneWeek(refreshToken, secretKey);
+        //만료가 되지 않는상태에서 refresh 검증후 1주일 이내인 상태라면 재발급하는 로직
+        if(isOneWeeksLeft){
             logger.info("만료가 되지 않은 상태기때문에 refresh를 재발급해주는 로직");
             String parsedEmail = getEmail(refreshToken);
             setRefreshToken(parsedEmail,response);
         }
-
-
 
 
         //권한 부여
@@ -107,6 +96,19 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);
 
+    }
+
+    private static String getAccessToken(String authorization) {
+        String[] splits = authorization.split(" ");
+
+        if(authorization == null || !authorization.startsWith("Bearer ")){
+            return null;
+        }
+        if(authorization == null || splits.length == 0){
+           return null;
+        }
+
+        return splits[1];
     }
 
     private String getEmail(String refreshToken) {
