@@ -20,6 +20,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static com.onyou.firstproject.utils.JwtTokenUtil.*;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -30,8 +32,8 @@ public class MemberService {
 
     @Value("${jwt.token.secret}")
     private String key;
-    private Long expireTimeMs = 1000 * 60 * 60l; // 1시간
-    private Long refreshExpireTimeMs = 1000 * 60 * 60l * 24 * 14; //24시간 * 14
+//    private Long expireTimeMs = 1000 * 60 * 60l; // 1시간
+//    private Long refreshExpireTimeMs = 1000 * 60 * 60l * 24 * 14; //24시간 * 14
 
     @Autowired
     private  EntityManager em;
@@ -55,20 +57,37 @@ public class MemberService {
 
         //값 넣어주기 연간관계 편의 메서드를 넣어주자.
         Role role = roleRepository.findByRoleName(RoleName.USER);
+        Role roleManager = roleRepository.findByRoleName(RoleName.MANAGER);
 
         if(role == null){
             role = new Role(RoleName.USER);
             em.persist(role);
         }
 
+        if(roleManager == null){
+            roleManager = new Role(RoleName.MANAGER);
+            em.persist(roleManager);
+        }
+
+
+
         MemberRole memberRole = MemberRole.builder()
                 .role(role)
                 .member(member)
                 .build();
 
+        MemberRole memberManagerRole = MemberRole.builder()
+                .role(roleManager)
+                .member(member)
+                .build();
+
         em.persist(memberRole);
 
+        em.persist(memberManagerRole);
+
+
         member.getMemberRoles().add(memberRole);
+        member.getMemberRoles().add(memberManagerRole);
 
 
         return member.getId();
@@ -89,14 +108,14 @@ public class MemberService {
     }
 
     public String parseEmailFromTokenAndCreateToken(String refreshToken){
-        String email = JwtTokenUtil.getEmail(refreshToken, key);
+        String email = getEmail(refreshToken, key);
         String token = createToken(email);
 
         return token;
     }
 
     private String createToken(String email) {
-        String token = JwtTokenUtil.createToken(email, key, expireTimeMs);
+        String token = JwtTokenUtil.createToken(email, key, accessExpireTimeMs);
 
         return token;
     }
@@ -110,8 +129,8 @@ public class MemberService {
     }
 
     public void setRefreshToken(String email, HttpServletResponse response) {
-
-        Cookie cookie = new Cookie("refresh-token", "chicken");
+        String refreshToken = JwtTokenUtil.createToken(email, key, refreshExpireTimeMs);
+        Cookie cookie = new Cookie("refresh-token", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);

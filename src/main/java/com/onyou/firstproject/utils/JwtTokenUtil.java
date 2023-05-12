@@ -11,6 +11,9 @@ import java.util.Date;
 
 public class JwtTokenUtil {
 
+    public static Long accessExpireTimeMs = 1000 * 60 * 60l; // 1시간
+    public static Long refreshExpireTimeMs = 1000 * 60 * 60l * 24 * 14; //24시간 * 14
+
     public static String getEmail(String token, String secretKey){
         return Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
@@ -20,14 +23,18 @@ public class JwtTokenUtil {
     }
 
     public static boolean isExpired(String token, String secretKey){
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
 //                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration()
-                .before(new Date());
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration()
+                    .before(new Date());
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     public static String createToken(String email, String key, long expireTimeMs){

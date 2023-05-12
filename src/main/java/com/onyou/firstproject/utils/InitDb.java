@@ -31,14 +31,14 @@ public class InitDb {
         private final EntityManager em;
 
         public void dbInit1(BCryptPasswordEncoder bCryptPasswordEncoder) {
-            System.out.println("Init1" + this.getClass());
-            String encodedPassword = bCryptPasswordEncoder.encode("test1234");
-            Member member = Member.builder().
-                    username("onyou")
-                    .email("dhsdb1541@naver.com")
-                    .password(encodedPassword)
-                    .build();
-            em.persist(member);
+//            System.out.println("Init1" + this.getClass());
+//            String encodedPassword = bCryptPasswordEncoder.encode("test1234");
+//            Member member = Member.builder().
+//                    username("onyou")
+//                    .email("dhsdb1541@naver.com")
+//                    .password(encodedPassword)
+//                    .build();
+//            em.persist(member);
 
         }
 
