@@ -99,16 +99,20 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private static String getAccessToken(String authorization) {
-        String[] splits = authorization.split(" ");
+            try {
+                String[] splits = authorization.split(" ");
 
-        if(authorization == null || !authorization.startsWith("Bearer ")){
-            return null;
-        }
-        if(authorization == null || splits.length == 0){
-           return null;
-        }
+                if(authorization == null || !authorization.startsWith("Bearer ")){
+                    return null;
+                }
+                if(authorization == null || splits.length == 0){
+                    return null;
+                }
 
-        return splits[1];
+                return splits[1];
+            }catch (Exception e){
+                return null;
+            }
     }
 
     private String getEmail(String refreshToken) {
