@@ -1,13 +1,13 @@
 package com.onyou.firstproject.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class JwtTokenUtil {
 
@@ -36,6 +36,36 @@ public class JwtTokenUtil {
             return true;
         }
     }
+
+    public static boolean isWithinOneWeek(String token, String secretKey) {
+        JwtParser jwtParser = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+                .build();
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        Date expiration = claimsJws.getBody().getExpiration();
+        Instant now = Instant.now();
+        Instant expirationInstant = expiration.toInstant();
+        Instant oneWeekFromNow = now.plusSeconds(7 * 24 * 60 * 60);
+
+        return expirationInstant.isBefore(oneWeekFromNow);
+    }
+//    public static boolean isWithinOneWeek(String token, String secretKey){
+//        try {
+//            Date now = new Date();
+//            Date oneWeeksAgo = new Date(now.getTime() - TimeUnit.DAYS.toMillis(7));
+//            Date expirationDate = Jwts.parserBuilder()
+//                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+////                .setSigningKey(secretKey)
+//                    .build()
+//                    .parseClaimsJws(token)
+//                    .getBody()
+//                    .getExpiration();
+//
+//            return expirationDate.after(oneWeeksAgo) && expirationDate.before(now);
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
 
     public static String createToken(String email, String key, long expireTimeMs){
         Claims claims = Jwts.claims();

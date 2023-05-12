@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        log.info("authentication", authorization );
+        log.info("authorization", authorization );
         if(authorization == null || !authorization.startsWith("Bearer ")){
             log.error("authentication에 이슈가 있습니다");
             filterChain.doFilter(request, response);
@@ -49,25 +49,17 @@ public class JwtFilter extends OncePerRequestFilter {
         //Token 꺼내기
         String token = authorization.split(" ")[1];
         boolean expired = false;
-        try {
-            expired = JwtTokenUtil.isExpired(token, secretKey);
-        }
-        catch (Exception e){
-            logger.error(e);
-        }
 
+        expired = JwtTokenUtil.isExpired(token, secretKey);
+
+        String refreshToken = getRefreshTokenFromCookie(request);
 
         // 1. 액세스 토큰 검증
         // 2. 액세스토큰 만료시 refresh token 검증
         // TODO 3. refresh 만료가 가까워질때 refresh token 재발급
         //TODO 4. Oauth 진행하기
-        // Token Expired되었는지 여부
         if(expired) {
             log.error("access 토큰이 만료되었습니다.");
-
-
-            String refreshToken = getRefreshTokenFromCookie(request);
-
 
             // 액세스가 만료되면서 refresh도 만료되었기 때문에
             if(refreshToken == null || JwtTokenUtil.isExpired(refreshToken, secretKey)){
@@ -75,8 +67,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-//            eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRoc2RiMTU0MUBuYXZlci5jb20iLCJpYXQiOjE2ODM4NjgwMjgsImV4cCI6MTY4NTA3NzYyOH0.jXUmIR_TT2nTVQggtf8fumhKOWWkX3wPukEE739Kcok
-            String parsingEmailFromRefreshToken = JwtTokenUtil.getEmail(refreshToken, secretKey);
+
+
+
+            String parsingEmailFromRefreshToken = getEmail(refreshToken);
 
             if(parsingEmailFromRefreshToken != null){
 
@@ -87,10 +81,22 @@ public class JwtFilter extends OncePerRequestFilter {
 
         }
 
+
+
         //만료 안된 accessToken이 발급되는 상태
 
-        String email = JwtTokenUtil.getEmail(token, secretKey);
+        String email = getEmail(token);
         log.info("email", email);
+
+        boolean oneWeeksLeft = JwtTokenUtil.isWithinOneWeek(refreshToken, secretKey);
+        //만료가 되지 않는상태에서 refresh 검증후 재발급하는 로직
+        if(oneWeeksLeft){
+            logger.info("만료가 되지 않은 상태기때문에 refresh를 재발급해주는 로직");
+            String parsedEmail = getEmail(refreshToken);
+            setRefreshToken(parsedEmail,response);
+        }
+
+
 
 
         //권한 부여
@@ -103,6 +109,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
     }
 
+    private String getEmail(String refreshToken) {
+        return JwtTokenUtil.getEmail(refreshToken, secretKey);
+    }
+
     private UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(String email) {
         Member member = memberRepository.findJoinByEmail(email);
         PrincipalDetails principalDetails = new PrincipalDetails(member);
@@ -111,6 +121,13 @@ public class JwtFilter extends OncePerRequestFilter {
         return authenticationToken;
     }
 
+    public void setRefreshToken(String email, HttpServletResponse response) {
+        String refreshToken = JwtTokenUtil.createToken(email, secretKey, refreshExpireTimeMs);
+        Cookie cookie = new Cookie("refresh-token", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
     private String getRefreshTokenFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
