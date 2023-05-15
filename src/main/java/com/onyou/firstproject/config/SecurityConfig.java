@@ -1,6 +1,10 @@
 package com.onyou.firstproject.config;
 
 
+import com.onyou.firstproject.config.auth.PrincipalDetails;
+import com.onyou.firstproject.config.oauth.PrincipalOauth2UserService;
+import com.onyou.firstproject.config.oauth.hanlder.OAuth2LoginFailureHandler;
+import com.onyou.firstproject.config.oauth.hanlder.OAuth2LoginSuccessHandler;
 import com.onyou.firstproject.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,10 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
 
     private final MemberRepository memberRepository;
+
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final PrincipalOauth2UserService principalOauth2UserService;
 
     @Value("${jwt.token.secret}")
     private String secretKey;
@@ -48,6 +56,13 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/api/member/silent-refresh").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").authenticated()
                 .and()
+                .oauth2Login()
+                //동의하고 계속하기 눌렀을때
+                //여기서 jwt 로그인하고 발급하기
+                .successHandler(oAuth2LoginSuccessHandler)
+                //소셜 로그인 실패시 핸들러
+                .failureHandler(oAuth2LoginFailureHandler)
+                .userInfoEndpoint().userService()
                 .build();
 
     }

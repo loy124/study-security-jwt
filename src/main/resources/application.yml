@@ -9,9 +9,19 @@ server:
 
 
 spring:
+  profiles:
+    group:
+      "local" : "local, oauth"
+    active : local
+
   devtools:
     restart:
       enabled: true
+
+
+jwt:
+  token:
+    secret: KdV0h1nSliuHZ3IbN1Ud9CYGp5vTia8/6y8SBbkeXV8=
 
   profiles:
     active: local
@@ -34,7 +44,3 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
-
-jwt:
-  token:
-    secret: KdV0h1nSliuHZ3IbN1Ud9CYGp5vTia8/6y8SBbkeXV8=
