@@ -23,6 +23,9 @@ public class Member extends BaseEntity {
     private String password;
     private String username;
 
+    private String provider;
+    private String providerId;
+
 /*
 * One to many
 * */
@@ -34,14 +37,13 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<MemberRole> memberRoles = new ArrayList<>();
 
-
-
     @Builder
-    public Member(String email, String password, String username) {
+    public Member(String email, String password, String username, String provider, String providerId) {
         this.email = email;
         this.password = password;
         this.username = username;
-
+        this.provider = provider;
+        this.providerId = providerId;
     }
 
 

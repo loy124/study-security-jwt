@@ -15,6 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -39,31 +40,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        return httpSecurity
+                httpSecurity
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(corsFilter)
-                .addFilterBefore(new JwtFilter(memberRepository, secretKey), UsernamePasswordAuthenticationFilter.class)
-
+                //URL별 권한 관리 옵션
                 .authorizeRequests()
-
                 .antMatchers("/api/member/login").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/member").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/member/silent-refresh").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/member").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/member/silent-refresh").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/**").authenticated()
+                        .anyRequest().permitAll()
                 .and()
+//                //Oauth2 로그인
                 .oauth2Login()
-                //동의하고 계속하기 눌렀을때
-                //여기서 jwt 로그인하고 발급하기
+//                //동의하고 계속하기 눌렀을때
+//                //여기서 jwt 로그인하고 발급하기
                 .successHandler(oAuth2LoginSuccessHandler)
-                //소셜 로그인 실패시 핸들러
+//                //소셜 로그인 실패시 핸들러
                 .failureHandler(oAuth2LoginFailureHandler)
-                .userInfoEndpoint().userService()
-                .build();
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService);
+
+        //filter
+        httpSecurity.addFilter(corsFilter);
+        httpSecurity.addFilterBefore(new JwtFilter(memberRepository, secretKey), UsernamePasswordAuthenticationFilter.class);
+
+
+
+
+
+        return httpSecurity.build();
+
+
 
     }
 }
