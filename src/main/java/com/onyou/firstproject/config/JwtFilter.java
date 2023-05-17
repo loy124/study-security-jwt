@@ -36,6 +36,8 @@ public class JwtFilter extends OncePerRequestFilter {
     //Username Token에서 꺼내기
     String email =  "";
 
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         System.out.println("JwtFilter.doFilterInternal");
