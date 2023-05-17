@@ -28,12 +28,22 @@ public class MemberDto {
         @NotBlank
         private String password;
 
+        private String provider;
+        private String providerId;
+
         private Role role;
 
         public MemberSignUpRequestDto(String email, String username, String password) {
             this.email = email;
             this.username = username;
             this.password = password;
+        }
+
+        public MemberSignUpRequestDto(String email, String username,String provider, String providerId) {
+            this.email = email;
+            this.username = username;
+            this.provider = provider;
+            this.providerId = providerId;
         }
 
         @Builder
@@ -44,6 +54,8 @@ public class MemberDto {
                     .email(email)
                     .username(username)
                     .password(password)
+                    .providerId(providerId)
+                    .provider(provider)
                     .build();
             return member;
         }

@@ -64,10 +64,10 @@ public class MemberService {
             em.persist(role);
         }
 
-        if(roleManager == null){
-            roleManager = new Role(RoleName.MANAGER);
-            em.persist(roleManager);
-        }
+//        if(roleManager == null){
+//            roleManager = new Role(RoleName.MANAGER);
+//            em.persist(roleManager);
+//        }
 
 
 
@@ -76,28 +76,34 @@ public class MemberService {
                 .member(member)
                 .build();
 
-        MemberRole memberManagerRole = MemberRole.builder()
-                .role(roleManager)
-                .member(member)
-                .build();
+//        MemberRole memberManagerRole = MemberRole.builder()
+//                .role(roleManager)
+//                .member(member)
+//                .build();
 
         em.persist(memberRole);
 
-        em.persist(memberManagerRole);
+//        em.persist(memberManagerRole);
 
 
         member.getMemberRoles().add(memberRole);
-        member.getMemberRoles().add(memberManagerRole);
-
+//        member.getMemberRoles().add(memberManagerRole);
 
         return member.getId();
     }
 
     public String login(String email, String password){
+
+        if(password == null){
+            return null;
+        }
+
         Member selectedMember = memberRepository.findByEmail(email);
 
+        //TODO Execption 처리
         if(!bCryptPasswordEncoder.matches(password, selectedMember.getPassword())){
             System.out.println("비밀번호가 일치하지 않습니다");
+
             return null;
         }
 

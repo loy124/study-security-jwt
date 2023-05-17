@@ -18,9 +18,19 @@ import java.util.Map;
 
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
-    private final Member member;
+    private Member member;
+
+    private OAuth2User oAuth2User;
+
     private Map<String, Object> attributes;
 
+    public PrincipalDetails(Member member) {
+        this.member = member;
+    }
+
+    public PrincipalDetails(OAuth2User oAuth2User) {
+        this.oAuth2User = oAuth2User;
+    }
 
     @Override
     public Map<String, Object> getAttributes() {
