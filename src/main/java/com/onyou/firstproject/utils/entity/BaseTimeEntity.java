@@ -1,4 +1,4 @@
-package com.onyou.firstproject.common;
+package com.onyou.firstproject.utils.entity;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

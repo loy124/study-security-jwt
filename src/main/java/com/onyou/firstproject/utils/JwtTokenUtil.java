@@ -1,13 +1,16 @@
 package com.onyou.firstproject.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.http.HttpStatus;
 
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class JwtTokenUtil {
 
@@ -82,5 +85,7 @@ public class JwtTokenUtil {
 
 
     }
+
+
 }
 

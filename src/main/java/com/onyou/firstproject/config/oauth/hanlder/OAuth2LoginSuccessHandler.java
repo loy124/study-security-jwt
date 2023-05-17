@@ -28,7 +28,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         System.out.println("오나ㅑ");
-//        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
 
     }

@@ -49,7 +49,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
 
-
         ClientRegistration clientRegistration = userRequest.getClientRegistration();
 
         OAuth2UserInfo oAuth2UserInfo = null;
@@ -75,15 +74,21 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                 .providerId(oAuth2UserInfo.getProviderId())
                 .build();
 
+        PrincipalDetails principalDetails = null;
 
         //이메일 검증 하기
-        boolean isValidateDuplicateMember = validateDuplicateMember(member);
 
-        if(isValidateDuplicateMember == false){
-            //로그인 처리
-            return oAuth2User;
 
-        }
+        Member findMember = memberRepository.findByEmail(member.getEmail());
+
+        //아이디가 존재하는 경우
+        // 해당 멤버를 리턴처리 하기
+        if(findMember != null){
+            principalDetails = new PrincipalDetails(findMember);
+            return principalDetails;
+        };
+
+
 
         //회원가입 처리
         Member savedMember = memberRepository.save(member);
@@ -106,11 +111,10 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
 
         member.getMemberRoles().add(memberRole);
-//
 
+        principalDetails = new PrincipalDetails(member);
 
-
-        return oAuth2User;
+        return principalDetails;
     }
 
     private boolean validateDuplicateMember(Member member) {

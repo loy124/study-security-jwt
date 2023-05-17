@@ -1,6 +1,6 @@
 package com.onyou.firstproject.board.entity;
 
-import com.onyou.firstproject.common.BaseEntity;
+import com.onyou.firstproject.utils.entity.BaseEntity;
 import com.onyou.firstproject.member.entity.Member;
 import lombok.*;
 

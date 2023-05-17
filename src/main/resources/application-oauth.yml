@@ -4,25 +4,25 @@ spring:
       client:
         registration:
           google:
-            client-id: 구글 클라이언트 ID
-            client-secret: 구글 클라이언트 Secret
+            client-id: 531667705768-bulbnt78rqumkuos6h0m18kifg9chpkd.apps.googleusercontent.com
+            client-secret: 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
             scope: profile, email
 
           naver:
-            client-id: 네이버 클라이언트 ID
-            client-secret: 네이버 클라이언트 Secret
+            client-id: 7diHjxjFPKK0Yccopb2r
+            client-secret: etsCgd8iYl
             redirect-uri: http://localhost:8080/login/oauth2/code/naver
             authorization-grant-type: authorization_code
-            scope: name, email, profile_image
+            scope: name, email
             client-name: Naver
 
           kakao:
-            client-id: 카카오 클라이언트 ID
-            client-secret: 카카오 클라이언트 Secret
+            client-id: 34b9440574169e0adb46656b95cbf6e5
+            client-secret: Z6dijZLrzXEnKc3Eojs6qZvKCgsdwGiL
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code
-            scope: profile_nickname, profile_image
+            scope: profile_nickname
             client-name: Kakao
 
         provider:

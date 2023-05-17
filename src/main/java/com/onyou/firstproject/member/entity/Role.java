@@ -1,6 +1,6 @@
 package com.onyou.firstproject.member.entity;
 
-import com.onyou.firstproject.common.BaseEntity;
+import com.onyou.firstproject.utils.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

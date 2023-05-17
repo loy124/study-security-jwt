@@ -7,6 +7,7 @@ import com.onyou.firstproject.utils.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -26,6 +27,7 @@ import static com.onyou.firstproject.utils.JwtTokenUtil.refreshExpireTimeMs;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
+    private final AuthenticationManager authenticationManager;
 
     private final MemberRepository memberRepository;
 
@@ -87,6 +89,7 @@ public class JwtFilter extends OncePerRequestFilter {
             setRefreshToken(parsedEmail,response);
         }
 
+        //TODO OAuth인 경우
 
         //권한 부여
         UsernamePasswordAuthenticationToken authenticationToken = getUsernamePasswordAuthenticationToken(email);
