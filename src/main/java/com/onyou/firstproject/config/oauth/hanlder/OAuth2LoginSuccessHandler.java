@@ -30,6 +30,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         System.out.println("오나ㅑ");
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
 
+        //TODO 마 토큰 발급해봐라 마!
+
 
     }
 }

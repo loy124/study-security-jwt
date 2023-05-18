@@ -1,5 +1,6 @@
 package com.onyou.firstproject.member.service;
 
+import com.onyou.firstproject.exception.Exception403;
 import com.onyou.firstproject.utils.JwtTokenUtil;
 import com.onyou.firstproject.member.dto.MemberDto;
 import com.onyou.firstproject.member.entity.Member;
@@ -57,7 +58,7 @@ public class MemberService {
 
         //값 넣어주기 연간관계 편의 메서드를 넣어주자.
         Role role = roleRepository.findByRoleName(RoleName.USER);
-        Role roleManager = roleRepository.findByRoleName(RoleName.MANAGER);
+//        Role roleManager = roleRepository.findByRoleName(RoleName.MANAGER);
 
         if(role == null){
             role = new Role(RoleName.USER);
@@ -130,7 +131,8 @@ public class MemberService {
     private void validateDuplicateMember(Member member) {
         List<Member> findMembers = memberRepository.findListByEmail(member.getEmail());
         if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
+            throw new Exception403("이미 존재하는 회원입니다.");
+
         }
     }
 

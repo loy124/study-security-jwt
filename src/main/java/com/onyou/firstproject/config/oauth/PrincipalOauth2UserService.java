@@ -79,7 +79,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         //이메일 검증 하기
 
 
-        Member findMember = memberRepository.findByEmail(member.getEmail());
+        Member findMember = memberRepository.findJoinByEmail(member.getEmail());
 
         //아이디가 존재하는 경우
         // 해당 멤버를 리턴처리 하기
