@@ -1,5 +1,6 @@
 package com.onyou.firstproject.config.auth;
 
+import com.onyou.firstproject.exception.Exception404;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.repository.MemberRepository;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(email);
+        Member member = memberRepository.findByEmail(email).orElseThrow(()->new Exception404("해당 유저가 없습니다"));
 
 
 

@@ -1,5 +1,7 @@
 package com.onyou.firstproject.member;
 
+import com.onyou.firstproject.exception.Exception403;
+import com.onyou.firstproject.exception.Exception404;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.entity.MemberRole;
 import com.onyou.firstproject.member.entity.Role;
@@ -66,7 +68,7 @@ class MemberRepositoryTest {
 
         Member savedMember = memberRepository.save(member);
         //when
-        Member member1 = memberRepository.findByEmail("onyou.lee@mincoding.co.kr");
+        Member member1 = memberRepository.findByEmail("onyou.lee@mincoding.co.kr").orElseThrow(() -> new Exception404("해당 이메일을 가진 유저가 없습니다"));
 
 
         //then
@@ -117,7 +119,7 @@ class MemberRepositoryTest {
         em.clear();
 
 //        Member findMember = memberRepository.findByEmail("onyou.lee@mincoding.co.kr");
-        Member findMember = memberRepository.findJoinByEmail("onyou.lee@mincoding.co.kr");
+        Member findMember = memberRepository.findJoinByEmail("onyou.lee@mincoding.co.kr").orElseThrow(() -> new Exception403("유효하지 않습니다"));
 
         //then
 

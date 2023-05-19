@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -15,12 +16,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     //Email로 찾기
 
-    Member findByEmail(@Param("email") String email);
+    Optional<Member> findByEmail(@Param("email") String email);
 
     @Query("select m from Member m" +
             " left join fetch m.memberRoles mr" +
-            " left join fetch mr.role r")
-    Member findJoinByEmail(@Param("email") String email);
+            " left join fetch mr.role r " +
+            "where m.email = :email")
+    Optional<Member> findJoinByEmail(@Param("email") String email);
+
+
+
+
 
     List<Member> findListByEmail(@Param("email") String email);
 

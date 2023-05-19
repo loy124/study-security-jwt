@@ -1,6 +1,7 @@
 package com.onyou.firstproject.config;
 
 import com.onyou.firstproject.config.auth.PrincipalDetails;
+import com.onyou.firstproject.exception.Exception403;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.repository.MemberRepository;
 import com.onyou.firstproject.utils.JwtTokenUtil;
@@ -19,6 +20,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.onyou.firstproject.utils.JwtTokenUtil.accessExpireTimeMs;
 import static com.onyou.firstproject.utils.JwtTokenUtil.refreshExpireTimeMs;
@@ -27,7 +29,7 @@ import static com.onyou.firstproject.utils.JwtTokenUtil.refreshExpireTimeMs;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final AuthenticationManager authenticationManager;
+
 
     private final MemberRepository memberRepository;
 
@@ -40,17 +42,28 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         System.out.println("JwtFilter.doFilterInternal");
+
+
         final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         log.info("authorization", authorization );
 
         //Token 꺼내기
         String accessToken = getAccessToken(authorization);
 
-        boolean isExpiredOrIssue = JwtTokenUtil.isExpired(accessToken, secretKey);
 
         String refreshToken = getRefreshTokenFromCookie(request);
 
+        if(refreshToken == null && accessToken == null){
+            log.error("토큰이 존재하지 않습니다.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+    try{
+
+        boolean isExpiredOrIssue = JwtTokenUtil.isExpired(accessToken, secretKey);
         // 1. 액세스 토큰 검증
         // 2. 액세스토큰 만료시 refresh token 검증
         // 3. refresh 만료가 가까워질때 refresh token 재발급
@@ -99,7 +112,14 @@ public class JwtFilter extends OncePerRequestFilter {
         // Detail을 넣어줍니다
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+    }
+    catch (Exception e){
+        logger.error(e);
+    }
+    finally {
         filterChain.doFilter(request, response);
+    }
 
     }
 
@@ -125,7 +145,9 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(String email) {
-        Member member = memberRepository.findJoinByEmail(email);
+        Member member = memberRepository.findJoinByEmail(email).get();
+
+
         PrincipalDetails principalDetails = new PrincipalDetails(member);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(principalDetails, null,principalDetails.getAuthorities());

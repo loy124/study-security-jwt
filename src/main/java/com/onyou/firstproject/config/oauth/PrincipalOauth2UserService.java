@@ -5,6 +5,7 @@ import com.onyou.firstproject.config.oauth.provider.GoogleUserInfo;
 import com.onyou.firstproject.config.oauth.provider.KakaoUserInfo;
 import com.onyou.firstproject.config.oauth.provider.NaverUserInfo;
 import com.onyou.firstproject.config.oauth.provider.OAuth2UserInfo;
+import com.onyou.firstproject.exception.Exception403;
 import com.onyou.firstproject.member.dto.MemberDto;
 import com.onyou.firstproject.member.entity.Member;
 import com.onyou.firstproject.member.entity.MemberRole;
@@ -28,6 +29,7 @@ import javax.persistence.EntityManager;
 import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.onyou.firstproject.member.dto.MemberDto.*;
 
@@ -79,12 +81,13 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         //이메일 검증 하기
 
 
-        Member findMember = memberRepository.findJoinByEmail(member.getEmail());
+        Optional<Member> findMember = memberRepository.findJoinByEmail(member.getEmail());
+
 
         //아이디가 존재하는 경우
         // 해당 멤버를 리턴처리 하기
-        if(findMember != null){
-            principalDetails = new PrincipalDetails(findMember);
+        if(findMember.isPresent()){
+            principalDetails = new PrincipalDetails(findMember.get());
             return principalDetails;
         };
 

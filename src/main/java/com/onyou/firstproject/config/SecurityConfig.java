@@ -61,7 +61,7 @@ public class SecurityConfig {
 
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-            builder.addFilterBefore(new JwtFilter(authenticationManager, memberRepository, secretKey), UsernamePasswordAuthenticationFilter.class);
+            builder.addFilterBefore(new JwtFilter(memberRepository, secretKey), UsernamePasswordAuthenticationFilter.class);
             // 시큐리티 관련 필터
             super.configure(builder);
         }
@@ -103,19 +103,24 @@ public class SecurityConfig {
 
         //인증, 권한 설정
         httpSecurity.authorizeRequests(
-                authorize -> authorize.antMatchers("/api/**").authenticated()
-                        .antMatchers("/api/member/login").permitAll()
+                authorize -> authorize.antMatchers("/api/member/login").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/member").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/member/silent-refresh").permitAll()
+                        .antMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
         );
 
-//        httpSecurity.authorizeRequests()
+//        httpSecurity
+//
+//                .authorizeRequests()
+//                .antMatchers(HttpMethod.POST, "/api/**").authenticated()
 //                .antMatchers("/api/member/login").permitAll()
 //                .antMatchers(HttpMethod.POST, "/api/member").permitAll()
 //                .antMatchers(HttpMethod.POST, "/api/member/silent-refresh").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/**").authenticated()
-//                        .anyRequest().permitAll();
+//
+//                .anyRequest().permitAll();
+
+
 
         //Oauth2 로그인
         httpSecurity.oauth2Login()

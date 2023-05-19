@@ -1,6 +1,7 @@
 package com.onyou.firstproject.member.service;
 
 import com.onyou.firstproject.exception.Exception403;
+import com.onyou.firstproject.exception.Exception404;
 import com.onyou.firstproject.utils.JwtTokenUtil;
 import com.onyou.firstproject.member.dto.MemberDto;
 import com.onyou.firstproject.member.entity.Member;
@@ -99,7 +100,7 @@ public class MemberService {
             return null;
         }
 
-        Member selectedMember = memberRepository.findByEmail(email);
+        Member selectedMember = memberRepository.findByEmail(email).orElseThrow(() -> new Exception404("해당 유저가 없습니다."));
 
         //TODO Execption 처리
         if(!bCryptPasswordEncoder.matches(password, selectedMember.getPassword())){
@@ -110,7 +111,6 @@ public class MemberService {
 
 
         return createToken(selectedMember.getEmail());
-
 
     }
 
