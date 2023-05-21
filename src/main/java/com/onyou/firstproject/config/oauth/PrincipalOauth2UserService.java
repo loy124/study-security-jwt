@@ -76,46 +76,47 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                 .providerId(oAuth2UserInfo.getProviderId())
                 .build();
 
-        PrincipalDetails principalDetails = null;
+//        PrincipalDetails principalDetails = null;
 
         //이메일 검증 하기
 
 
-        Optional<Member> findMember = memberRepository.findJoinByEmail(member.getEmail());
+//        Optional<Member> findMember = memberRepository.findJoinByEmail(member.getEmail());
+//
+//
+//        //아이디가 존재하는 경우
+//        // 해당 멤버를 리턴처리 하기
+//        if(findMember.isPresent()){
+//            principalDetails = new PrincipalDetails(findMember.get());
+//            return principalDetails;
+//        };
+//
+//
+//
+//        //회원가입 처리
+//        Member savedMember = memberRepository.save(member);
+//
+//        //값 넣어주기 연간관계 편의 메서드를 넣어주자.
+//        Role role = roleRepository.findByRoleName(RoleName.USER);
+//
+//
+//        if(role == null){
+//            role = new Role(RoleName.USER);
+//            em.persist(role);
+//        }
+//
+//        MemberRole memberRole = MemberRole.builder()
+//                .role(role)
+//                .member(member)
+//                .build();
+//
+//        em.persist(memberRole);
+//
+//
+//        member.getMemberRoles().add(memberRole);
 
+        PrincipalDetails principalDetails = new PrincipalDetails(member);
 
-        //아이디가 존재하는 경우
-        // 해당 멤버를 리턴처리 하기
-        if(findMember.isPresent()){
-            principalDetails = new PrincipalDetails(findMember.get());
-            return principalDetails;
-        };
-
-
-
-        //회원가입 처리
-        Member savedMember = memberRepository.save(member);
-
-        //값 넣어주기 연간관계 편의 메서드를 넣어주자.
-        Role role = roleRepository.findByRoleName(RoleName.USER);
-
-
-        if(role == null){
-            role = new Role(RoleName.USER);
-            em.persist(role);
-        }
-
-        MemberRole memberRole = MemberRole.builder()
-                .role(role)
-                .member(member)
-                .build();
-
-        em.persist(memberRole);
-
-
-        member.getMemberRoles().add(memberRole);
-
-        principalDetails = new PrincipalDetails(member);
 
         return principalDetails;
     }

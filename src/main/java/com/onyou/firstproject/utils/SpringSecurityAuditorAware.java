@@ -23,7 +23,7 @@ public class SpringSecurityAuditorAware implements AuditorAware<Long> {
 
         if(!(authentication.getPrincipal() instanceof String)){
             PrincipalDetails principal = (PrincipalDetails) (authentication.getPrincipal());
-            return Optional.of(principal.getMember().getId());
+            return Optional.ofNullable(principal.getMember().getId());
         }
 
 

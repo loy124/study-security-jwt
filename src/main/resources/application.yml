@@ -11,10 +11,13 @@ jwt:
   token:
     secret: KdV0h1nSliuHZ3IbN1Ud9CYGp5vTia8/6y8SBbkeXV8=
 
+user:
+  url: http://localhost:5500/study-security-jwt/test.html
+
 spring:
   profiles:
     group:
-      "local" : "local, oauth"
+      "local" : "local, oauth, jwt"
     active : local
 
   devtools:

@@ -74,14 +74,6 @@ public class MemberController {
 
     @PostMapping("silent-refresh")
     public ResponseEntity<?> silentRefresh(@CookieValue("refresh-token") String refreshToken){
-        // System.out.println("refreshToken = " + refreshToken);
-        // token이 null인지
-        // token안에 값이 null이 아닌지
-
-        //처음에 들어와서 silent-refresh의 경우 refreshToken에대한 유효성 검사를 한다 -> SilentFilter를 적용하고
-        // 나머지는 기본 JWT 필터를 받고 있다.
-
-        //특정 URL로 오는경우 해당 유효성 검사를 진행한다.
 
 
         if(refreshToken == null){

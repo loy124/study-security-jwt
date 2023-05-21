@@ -1,5 +1,6 @@
 package com.onyou.firstproject.member.service;
 
+import com.onyou.firstproject.config.auth.PrincipalDetails;
 import com.onyou.firstproject.exception.Exception403;
 import com.onyou.firstproject.exception.Exception404;
 import com.onyou.firstproject.utils.JwtTokenUtil;
@@ -21,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
 import static com.onyou.firstproject.utils.JwtTokenUtil.*;
 
@@ -58,41 +60,60 @@ public class MemberService {
 
 
         //값 넣어주기 연간관계 편의 메서드를 넣어주자.
-        Role role = roleRepository.findByRoleName(RoleName.USER);
-//        Role roleManager = roleRepository.findByRoleName(RoleName.MANAGER);
-
-        if(role == null){
-            role = new Role(RoleName.USER);
-            em.persist(role);
-        }
-
-//        if(roleManager == null){
-//            roleManager = new Role(RoleName.MANAGER);
-//            em.persist(roleManager);
-//        }
+        Role role = getOrSaveRole();
 
 
+        addMemberRole(member, role);
 
+
+        return member.getId();
+    }
+
+    /*
+     * Oauth2의 회원가입
+     * */
+
+    @Transactional
+    public Long signUp(Member member) throws Exception {
+
+        //이메일 검증 하기
+        validateDuplicateMember(member);
+
+
+        Member saveMember = memberRepository.save(member);
+
+
+        //값 넣어주기 연간관계 편의 메서드를 넣어주자.
+        Role role = getOrSaveRole();
+
+        addMemberRole(saveMember, role);
+
+        return member.getId();
+    }
+
+
+    private void addMemberRole(Member member, Role role) {
         MemberRole memberRole = MemberRole.builder()
                 .role(role)
                 .member(member)
                 .build();
 
-//        MemberRole memberManagerRole = MemberRole.builder()
-//                .role(roleManager)
-//                .member(member)
-//                .build();
-
         em.persist(memberRole);
 
-//        em.persist(memberManagerRole);
-
-
         member.getMemberRoles().add(memberRole);
-//        member.getMemberRoles().add(memberManagerRole);
-
-        return member.getId();
     }
+
+    private Role getOrSaveRole() {
+        Role role = roleRepository.findByRoleName(RoleName.USER);
+
+        if(role == null){
+            role = new Role(RoleName.USER);
+            em.persist(role);
+        }
+        return role;
+    }
+
+
 
     public String login(String email, String password){
 
@@ -121,7 +142,7 @@ public class MemberService {
         return token;
     }
 
-    private String createToken(String email) {
+    public String createToken(String email) {
         String token = JwtTokenUtil.createToken(email, key, accessExpireTimeMs);
 
         return token;
@@ -129,11 +150,13 @@ public class MemberService {
 
 
     private void validateDuplicateMember(Member member) {
-        List<Member> findMembers = memberRepository.findListByEmail(member.getEmail());
-        if (!findMembers.isEmpty()) {
-            throw new Exception403("이미 존재하는 회원입니다.");
+        Optional<Member> findMember = memberRepository
+                .findByEmail(member.getEmail());
 
+        if(!findMember.isEmpty()){
+            throw new Exception403("이미 존재하는 회원입니다");
         }
+
     }
 
     public void setRefreshToken(String email, HttpServletResponse response) {
